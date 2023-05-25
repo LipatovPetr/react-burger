@@ -1,66 +1,86 @@
-import React from "react";
+import { useEffect, useState } from "react";
+
+import cn from "classnames";
 import PropTypes from "prop-types";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./burger-ingredients.module.css";
-import IngredientsGroup from "../ingredients-group/ingredients-group.jsx";
+import IngredientsGroup from "./ingredients-group/ingredients-group";
 import Modal from "../modal/modal.jsx";
-import IngredientDetails from "../ingredient-details/ingredient-details.jsx";
-import { ingredientsTypes } from "../../utils/data.js"
+import IngredientDetails from "./ingredient-details/ingredient-details";
+import Placeholder from "./placeholder/placeholder";
 
-function BurgerIngredients({
-  data,
-  clickedIngredient,
-  setClickedIngredient,
-}) {
-  const [current, setCurrent] = React.useState(ingredientsTypes.buns);
+import { INGREDIENTS_TYPES } from "../../utils/constants";
+
+import { ingredientsPopupClosed } from "../../services/popup-ingredient-details-slice";
+
+import { useSelector } from "react-redux";
+import { useInView } from "react-intersection-observer";
+
+function BurgerIngredients() {
+  const [current, setCurrent] = useState(INGREDIENTS_TYPES.buns);
+
+  const [bunsRef, bunsInView, bunsEntry] = useInView({ threshold: 0 });
+  const [saucesRef, saucesInView, saucesEntry] = useInView({ threshold: 0 });
+  const [mainRef, mainInView, mainEntry] = useInView({ threshold: 0 });
+
+  useEffect(() => {
+    mainInView && setCurrent(INGREDIENTS_TYPES.main);
+    saucesInView && setCurrent(INGREDIENTS_TYPES.sauces);
+    bunsInView && setCurrent(INGREDIENTS_TYPES.buns);
+  }, [bunsInView, saucesInView, mainInView]);
+
+  const onTabClick = (tab, entry) => (e) => {
+    setCurrent(tab);
+    entry.target.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const popupOpened = useSelector((state) => state.ingredientsPopup.opened);
+  const fetchStatus = useSelector((state) => state.burgerIngredients.status);
 
   return (
     <div className={styles.section}>
-      <h1 className={styles.heading + " text text_type_main-large"}>
-        Соберите бургер
+      <h1 className={cn(styles.heading, "text", "text_type_main-large")}>
+        Build a burger
       </h1>
 
-      <div className={styles.tab + " mt-5"}>
-        <Tab value={ ingredientsTypes.buns } active={current === ingredientsTypes.buns}>
-          { ingredientsTypes.buns }
+      <div className={cn(styles.tab, "mt-5")}>
+        <Tab
+          value={INGREDIENTS_TYPES.buns}
+          active={current === INGREDIENTS_TYPES.buns}
+          onClick={onTabClick(INGREDIENTS_TYPES.buns, bunsEntry)}
+        >
+          {INGREDIENTS_TYPES.buns}
         </Tab>
-        <Tab value={ ingredientsTypes.buns }active={current === ingredientsTypes.buns}>
-          { ingredientsTypes.buns }
+        <Tab
+          value={INGREDIENTS_TYPES.sauces}
+          active={current === INGREDIENTS_TYPES.sauces}
+          onClick={onTabClick(INGREDIENTS_TYPES.sauces, saucesEntry)}
+        >
+          {INGREDIENTS_TYPES.sauces}
         </Tab>
-        <Tab value={ ingredientsTypes.main } active={current === ingredientsTypes.main}>
-          { ingredientsTypes.main }
+        <Tab
+          value={INGREDIENTS_TYPES.main}
+          active={current === INGREDIENTS_TYPES.main}
+          onClick={onTabClick(INGREDIENTS_TYPES.main, mainEntry)}
+        >
+          {INGREDIENTS_TYPES.main}
         </Tab>
       </div>
 
       <div className={styles.menuSection}>
-        <IngredientsGroup
-          name="Булки"
-          type="bun"
-          data={data}
-          clickedIngredient={clickedIngredient}
-          setClickedIngredient={setClickedIngredient}
-        />
-        <IngredientsGroup
-          name="Соусы"
-          type="sauce"
-          data={data}
-          clickedIngredient={clickedIngredient}
-          setClickedIngredient={setClickedIngredient}
-        />
-        <IngredientsGroup
-          name="Главное"
-          type="main"
-          data={data}
-          clickedIngredient={clickedIngredient}
-          setClickedIngredient={setClickedIngredient}
-        />
+        {fetchStatus === "loading" ? (
+          <Placeholder />
+        ) : (
+          <>
+            <IngredientsGroup name="Buns" type="bun" ref={bunsRef} />
+            <IngredientsGroup name="Sauces" type="sauce" ref={saucesRef} />
+            <IngredientsGroup name="Main" type="main" ref={mainRef} />
+          </>
+        )}
       </div>
-      {clickedIngredient && (
-        <Modal
-          title="Детали ингредиентов"
-          popupCloseButtonHandler={setClickedIngredient}
-        >
-          <IngredientDetails data={clickedIngredient} />
+      {popupOpened && (
+        <Modal popupClosed={ingredientsPopupClosed} title="Детали ингредиентов">
+          <IngredientDetails />
         </Modal>
       )}
     </div>
@@ -68,24 +88,3 @@ function BurgerIngredients({
 }
 
 export default BurgerIngredients;
-
-BurgerIngredients.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    calories: PropTypes.number.isRequired,
-  }).isRequired).isRequired,
-  clickedIngredient: PropTypes.arrayOf(PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    calories: PropTypes.number.isRequired,
-  }).isRequired).isRequired,
-  setClickedIngredient: PropTypes.func.isRequired,
-  setIngredientsPopupOpen: PropTypes.func.isRequired,
-};

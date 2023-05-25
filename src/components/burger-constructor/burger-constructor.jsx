@@ -1,74 +1,40 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { useState } from "react";
+import cn from "classnames";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
-  ConstructorElement,
-  DragIcon,
   CurrencyIcon,
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal.jsx";
 import styles from "./burger-constructor.module.css";
-import OrderDetails from "../order-details/order-details.jsx";
-import { orderData } from "../../utils/data.js";
+import OrderDetails from "./order-details/order-details";
+import IngredientsList from "./ingredients-list/ingredients-list";
+import { useDispatch } from "react-redux";
+import {
+  checkoutPopupOpened,
+  checkoutPopupClosed,
+} from "../../services/popup-checkout-details-slice";
+import { postData } from "../../services/order-slice";
 
-function BurgerConstructor({ data }) {
-  const [orderPopupIsOpen, setOrderPopupOpen] = useState(false);
-
-  const lockedIngredient = data.find(
-    (item) => item.name === "Краторная булка N-200i"
+function BurgerConstructor() {
+  const dispatch = useDispatch();
+  const totalPrice = useSelector((state) => state.order.totalPrice);
+  const orderData = useSelector((state) => state.order.orderList);
+  const orderPopupIsOpen = useSelector((state) => state.checkoutPopup.opened);
+  const chosenBun = useSelector((state) => state.burgerConstructor.bun);
+  const chosenStuffings = useSelector(
+    (state) => state.burgerConstructor.stuffings
   );
 
-  const totalPrice = data.reduce((sum, component) => sum + component.price, 0);
-
   const handleOrderClick = () => {
-    setOrderPopupOpen(true);
+    dispatch(postData(orderData));
+    dispatch(checkoutPopupOpened());
   };
 
   return (
     <div className={styles.section}>
-      <div className={styles.ingredients + " mt-25"}>
-        {lockedIngredient && (
-          <div className={styles.ingredientContainer + " pl-4 pr-4"}>
-            <ConstructorElement
-              type="top"
-              isLocked={true}
-              text={`${lockedIngredient.name} (верх)`}
-              price={lockedIngredient.price}
-              thumbnail={lockedIngredient.image}
-            />
-          </div>
-        )}
-
-        <div className={styles.scrolledSection}>
-          {data.map((item) => (
-            <div
-              className={styles.ingredientContainer + " pl-4 pr-4"}
-              key={item._id}
-            >
-              <DragIcon type="primary" />
-              <ConstructorElement
-                text={item.name}
-                price={item.price}
-                thumbnail={item.image}
-              />
-            </div>
-          ))}
-        </div>
-        {lockedIngredient && (
-          <div className={styles.ingredientContainer + " pl-4 pr-4"}>
-            <ConstructorElement
-              type="bottom"
-              isLocked={true}
-              text={`${lockedIngredient.name} (низ)`}
-              price={lockedIngredient.price}
-              thumbnail={lockedIngredient.image}
-            />
-          </div>
-        )}
-      </div>
-
-      <div className={styles.orderInfo + " mt-10 mr-4"}>
+      <IngredientsList />
+      <div className={cn(styles.orderInfo, "mt-10", "mr-4")}>
         <div className={styles.priceContainer + " mr-10"}>
           <span className={styles.priceValue + " text text_type_digits-medium"}>
             {totalPrice}
@@ -80,15 +46,16 @@ function BurgerConstructor({ data }) {
           htmlType="button"
           type="primary"
           size="large"
+          disabled={!chosenBun || chosenStuffings.length === 0}
           onClick={handleOrderClick}
         >
-          Оформить заказ
+          Order
         </Button>
       </div>
 
       {orderPopupIsOpen && (
-        <Modal popupCloseButtonHandler={setOrderPopupOpen}>
-          <OrderDetails orderData={orderData} />
+        <Modal popupClosed={checkoutPopupClosed}>
+          <OrderDetails checkOutData={"checkOutData"} />
         </Modal>
       )}
     </div>
@@ -96,15 +63,3 @@ function BurgerConstructor({ data }) {
 }
 
 export default BurgerConstructor;
-
-BurgerConstructor.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      price: PropTypes.number.isRequired,
-      image: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  setOrderPopupOpen: PropTypes.func.isRequired,
-};

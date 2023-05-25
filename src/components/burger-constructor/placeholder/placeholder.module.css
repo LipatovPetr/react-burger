@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+  justify-content: center;
+  border: 1px dotted #8585AD;
+  align-items: center;
+  height: 150px;
+}
+
+.title {
+  padding: 0;
+  margin: 0;
+}

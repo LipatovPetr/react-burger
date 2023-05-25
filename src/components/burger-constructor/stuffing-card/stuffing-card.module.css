@@ -1,0 +1,10 @@
+.ingredientContainer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 13.5px;
+  }
+
+.invisible {
+    visibility: hidden;
+  }
