@@ -1,0 +1,42 @@
+.section {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  margin-top: 180px;
+  width: 480px;
+}
+
+.heading {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.inputsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.linksContainer {
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.link {
+  color: #4c4cff;
+  text-decoration: none;
+}
+
+.error {
+  margin: 0;
+  padding: 0;
+  color: red;
+}

@@ -1,0 +1,11 @@
+.ingredientsSubgroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* @media screen and (min-width: 600px) {
+    .ingredientsSubgroup {
+        gap: 4px;
+    }
+  } */

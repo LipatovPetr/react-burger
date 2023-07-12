@@ -1,0 +1,24 @@
+.card {
+  position: relative;
+  width: 272px;
+  height: 208px;
+  background-color: #131316;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cardImage {
+  width: 240px;
+  height: 120px;
+}
+
+.priceElement {
+  composes: mt-1 text text_type_digits-default from global;
+  display: flex;
+  justify-content: center;
+}
+
+.cardTitle {
+  composes: mt-1 text text_type_main-small from global;
+  text-align: center;
+}

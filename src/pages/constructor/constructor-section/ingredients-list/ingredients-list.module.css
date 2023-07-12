@@ -1,0 +1,49 @@
+.ingredients {
+  display: flex;
+  flex-direction: column;
+}
+
+.scrolledSection {
+  position: relative;
+  max-height: 496px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.scrolledSection::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scrolledSection::-webkit-scrollbar-track {
+  background: rgb(15, 15, 33);
+}
+
+.scrolledSection::-webkit-scrollbar-thumb {
+  background-color: rgb(76, 76, 254);
+  border-radius: 20px;
+  border: 3px solid rgb(76, 76, 254);
+}
+
+@media (max-height: 990px) {
+  .scrolledSection {
+    max-height: 400px;
+  }
+}
+
+.scrolledSection > :first-child {
+  margin-top: 16px;
+}
+
+.scrolledSection > :last-child {
+  margin-bottom: 16px;
+}
+
+.ingredientContainer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 13.5px;
+}

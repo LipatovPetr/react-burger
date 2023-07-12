@@ -1,0 +1,41 @@
+.section {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+}
+
+.box {
+  margin-top: 120px;
+  display: flex;
+  flex-direction: column;
+  width: 720px;
+  align-items: center;
+}
+
+.image {
+  width: 480px;
+  height: 240px;
+}
+
+.details {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 20px;
+  max-width: 520px;
+  list-style: none;
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+
+.title {
+  composes: text text_type_main-large from global;
+  text-align: center;
+}

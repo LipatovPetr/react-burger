@@ -1,0 +1,50 @@
+.section {
+  display: flex;
+}
+
+.navigationContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 320px;
+  margin-left: 16%;
+  margin-right: 60px;
+  margin-top: 120px;
+}
+
+.link_inactive {
+  composes: text text_type_main-medium text_color_inactive from global;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  text-decoration: none;
+}
+
+.link_active {
+  composes: text text_type_main-medium from global;
+  color: #ffff;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  text-decoration: none;
+}
+
+.button {
+  composes: text text_type_main-medium text_color_inactive from global;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  text-decoration: none;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.button:hover {
+  color: #ffff;
+}
+
+.caption {
+  composes: text text_type_main-default text_color_inactive from global;
+  margin: 0;
+  padding: 0;
+  margin-top: 120px;
+}

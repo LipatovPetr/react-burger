@@ -1,0 +1,14 @@
+.section {
+  width: 600px;
+}
+
+.orderInfo {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 52px;
+}
+
+.priceValue {
+  margin-right: 9.5px;
+}
